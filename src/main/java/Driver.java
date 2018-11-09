@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 public class Driver {
 
   private static final Pattern TAG_PATTERN =
-      Pattern.compile("<\\s*td[^>]*>(.*?)<\\s*/\\s*td><\\s*td[^>]*>(.*?)<\\s*/\\s*td><\\s*td[^>]*>(.*?)<\\s*/\\s*td>");
+      Pattern.compile(
+          "<\\s*td[^>]*>(.*?)<\\s*/\\s*td><\\s*td[^>]*>(.*?)<\\s*/\\s*td><\\s*td[^>]*>(.*?)<\\s*/\\s*td>");
   private static final Map<Integer, List<BabyName>> YEAR_TO_BN_MAP = new HashMap<>();
 
   public static void main(String[] args) {
@@ -34,24 +35,24 @@ public class Driver {
       throw new IllegalStateException();
     }
     Arrays.stream(htmls).forEach((File html) ->
-      YEAR_TO_BN_MAP.put(driver.getYearFromFileName(html), driver.readBabyNameList(html))
+        YEAR_TO_BN_MAP.put(driver.getYearFromFileName(html), driver.readBabyNameList(html))
     );
 
-    Path path = Path.of("src/main/resources/output");
-    if (!Files.exists(path)) {
-      try{
-        Files.createDirectories(path);
-      } catch (IOException ioE) {
-        throw new RuntimeException(ioE);
-      }
-    }
-
     if (args.length != 0 && "summaryfile".equals(args[0])) {
+      Path path = Path.of("src/main/resources/output");
+      if (!Files.exists(path)) {
+        try {
+          Files.createDirectories(path);
+        } catch (IOException ioE) {
+          throw new RuntimeException(ioE);
+        }
+      }
+
       for (Map.Entry<Integer, List<BabyName>> yearToBn : YEAR_TO_BN_MAP.entrySet()) {
         int year = yearToBn.getKey();
         String fileName = String.format("src/main/resources/output/%s.html.summary", year);
 
-        try (PrintWriter pr = new PrintWriter(new File(fileName))) {
+        try(PrintWriter pr = new PrintWriter(new File(fileName)))  {
           pr.println(year);
 
           yearToBn.getValue().forEach(bn -> {
@@ -85,7 +86,7 @@ public class Driver {
   private int getYearFromFileName(File html) {
     return Integer.parseInt(html.getName().replaceAll("[a-z.]", ""));
   }
-  
+
   private List<BabyName> readBabyNameList(File html) {
     List<BabyName> resultList;
     try {
@@ -121,6 +122,7 @@ public class Driver {
     }
 
     // Sort
+    resultList.sort((bn1, bn2) -> bn1.getName().compareTo(bn2.getName()));
     resultList.sort(Comparator.comparing(BabyName::getName));
 
     return resultList;
