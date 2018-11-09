@@ -3,9 +3,14 @@ import enums.Gender;
 public class BabyName {
 
   private String name;
-  private int year;
   private Gender gender;
   private int rank;
+
+  public BabyName(String name, Gender gender, int rank){
+    this.name = name;
+    this.gender = gender;
+    this.rank = rank;
+  }
 
   public String getName() {
     return name;
@@ -13,14 +18,6 @@ public class BabyName {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public int getYear() {
-    return year;
-  }
-
-  public void setYear(int year) {
-    this.year = year;
   }
 
   public Gender getGender() {
@@ -38,5 +35,9 @@ public class BabyName {
   public void setRank(int rank) {
     this.rank = rank;
   }
+
+
+
+
 }
 
